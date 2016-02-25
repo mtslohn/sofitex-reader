@@ -10,6 +10,8 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
+import org.getopt.luke.DocReconstructor;
+import org.getopt.luke.DocReconstructor.Reconstructed;
 
 /**
  * Hello world!
@@ -27,12 +29,17 @@ public class App {
 			
 			TopDocs topDocs = searcher.search(new MatchAllDocsQuery(), Integer.MAX_VALUE);
 			
+			DocReconstructor reconstructor = new DocReconstructor(searcher.getIndexReader());
+			
 			for (ScoreDoc scoreDoc: topDocs.scoreDocs) {
-				Document document = searcher.doc(scoreDoc.doc);
-				System.out.println(document.getField("busca_cv"));
+				Reconstructed reconstructed = reconstructor.reconstruct(scoreDoc.doc);
+				System.out.println(reconstructed.getReconstructedFields().get("busca_cv").toString(" ").replace("null_1", "<PREP>"));
 			}
 			
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
