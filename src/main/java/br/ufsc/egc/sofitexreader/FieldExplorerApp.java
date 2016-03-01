@@ -37,7 +37,7 @@ public class FieldExplorerApp {
 				Reconstructed reconstructed = reconstructor.reconstruct(scoreDoc.doc);
 				Map<String, GrowableStringArray> map = reconstructed.getReconstructedFields() ;
 				for (String field: map.keySet()) {
-					System.out.println(field + ": " + map.get(field).toString(" "));
+					System.out.println(field + "\t " + map.get(field).toString(" "));
 				}
 				break;
 			}
