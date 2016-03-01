@@ -17,7 +17,7 @@ import org.getopt.luke.DocReconstructor.Reconstructed;
  * Hello world!
  *
  */
-public class App {
+public class BuscaCvExtractorApp {
 	
 	public static void main(String[] args) {
 		
