@@ -2,6 +2,8 @@ package br.ufsc.egc.sofitexreader;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 import org.apache.lucene.document.Document;
@@ -25,21 +27,22 @@ public class FieldExplorerApp {
 		
 		try {
 			
-			FSDirectory directory = FSDirectory.open(FileSystems.getDefault().getPath("index/pessoa"));
+			FSDirectory directory = FSDirectory.open(FileSystems.getDefault().getPath("index/mapa/pessoa"));
 			DirectoryReader directoryReader = DirectoryReader.open(directory);
 			IndexSearcher searcher = new IndexSearcher(directoryReader);
 			
 			TopDocs topDocs = searcher.search(new MatchAllDocsQuery(), Integer.MAX_VALUE);
 			
-			DocReconstructor reconstructor = new DocReconstructor(searcher.getIndexReader());
-			
+			DocReconstructor reconstructor = new DocReconstructor(searcher.getIndexReader(), new String[]{"resume_lattes", "pessoa_thrift"}, -1);
+			int i = 0;
 			for (ScoreDoc scoreDoc: topDocs.scoreDocs) {
 				Reconstructed reconstructed = reconstructor.reconstruct(scoreDoc.doc);
 				Map<String, GrowableStringArray> map = reconstructed.getReconstructedFields() ;
-				for (String field: map.keySet()) {
-					System.out.println(field + "\t " + map.get(field).toString(" "));
+				ArrayList<String> keyList = new ArrayList<String>(map.keySet());
+				Collections.sort(keyList);
+				for (String field: keyList) {
+					System.out.println(field + "\t " + map.get(field).toString(" ").replaceAll("\n", " "));
 				}
-				break;
 			}
 			
 		} catch (IOException e) {
